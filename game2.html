@@ -4,9 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissor</title>
-    <link rel="stylesheet" href="game2.css">
+    <style>*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-color: bisque;
+}
+.header {
+    color : white;
+    background-color:  #05032d;
+    display: flex;
+    height: 260px;
+    justify-content: center ;
+    align-items: center;
+    font-size: 70px;
+}
+.move {
+    text-align: center;
+    font-size: 100px;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 30vh;
+    width: 100%;    
+}
+.btn {
+    width: 20vmin;
+    height: 20vmin;
+    font-size: 70px;
+    margin: 60px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.3);
+}
+.btn:hover {
+    box-shadow: 30px 30px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+.rock {
+    background-color: rgb(242, 104, 104);
+}
+.paper {
+    background-color: rgb(119, 235, 119);
+}
+.scissor {
+    background-color: rgb(103, 103, 236);
+}
+.result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    font-size: 70px;
+    margin-top: 100px;
+    
+}
+.user-score, .comp-score {
+    color: #05032d;
+    font-weight: bold;
+    font-size: 100px;
+    text-align: center;
+}
+.msg-container {
+    height: 20vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.msg {
+    color: #05032d;
+    font-weight: bold;
+    text-align: center;
+    font-size: 120px;
+    padding: 30px;
+    border-radius: 2rem;
+    background-color: black;
+    color: white;
+}</style>
 </head>
 <body>
+    
     <div class="header">
         <h1><pre>Rock  Paper  Scissor</pre></h1>
     </div>
@@ -32,6 +117,64 @@
         </div>
         <div class="msg-container"><div class="msg">Start Game</div></div>
     </main>
-    <script src="game2.js"></script>
+    <script>let userScore = 0;
+let computerScore = 0;
+let choices = document.querySelectorAll('.btn');
+let msg = document.querySelector('.msg');
+let userScoreDisplay = document.querySelector('.user-score');
+let computerScoreDisplay = document.querySelector('.comp-score');
+
+const GenCompChoice = () => {
+    let choices = ['Rock', 'Paper', 'Scissor'];
+    let randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
+};
+
+const drawGame  = () => {
+    console.log("It's a draw!");
+    msg.textContent = "It's a draw! Play again!";
+    msg.style.backgroundColor = "#05032d"
+};
+
+const showWinner = (userWin, userchoice , compchoice) => {
+    if (userWin) {
+        console.log("You win!");
+        userScore++; 
+        userScoreDisplay.innerText = userScore;
+        msg.textContent = `You win! ${userchoice} beats ${compchoice}`;
+        msg.style.backgroundColor = "green";}
+    else{
+        console.log("You lose!");
+        computerScore++; 
+        computerScoreDisplay.innerText = computerScore;
+        msg.textContent =  `You lose! ${compchoice} beats ${userchoice}`;
+        msg.style.backgroundColor = "red";
+    }
+};
+
+const playGame = (userchoice) =>{
+    console.log(`User choice: ${userchoice}`);
+    const compchoice = GenCompChoice();
+    console.log(`Computer choice: ${compchoice}`);
+    if (userchoice === compchoice) {
+        drawGame();
+    } else {
+        let userWin = true;
+        if (userchoice === 'Rock') {
+            userWin = compchoice === 'Scissor'? true : false;
+        } else if (userchoice === 'Paper') {
+            userWin = compchoice === 'Rock'? true : false;
+        } else  {
+            userWin = compchoice === 'Paper'? true : false;
+        }
+        showWinner(userWin,userchoice, compchoice);
+    }
+}
+choices.forEach(choice => {
+    choice.addEventListener('click',() => {
+        const userchoice = choice.textContent;
+        playGame(userchoice);
+    });
+});</script>
 </body>
 </html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Premium Weather App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#fff;
+}
+
+.card{
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.1);
+  border-radius:20px;
+  padding:25px;
+  width:300px;
+  text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  margin-bottom:10px;
+  outline:none;
+}
+
+button{
+  padding:10px;
+  width:100%;
+  border:none;
+  border-radius:10px;
+  background:#38bdf8;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.weather-icon{
+  width:80px;
+}
+
+.temp{
+  font-size:32px;
+  margin:10px 0;
+}
+
+.city{
+  font-size:20px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+  <input id="cityInput" placeholder="Enter city">
+  <button onclick="getWeatherByCity()">Search</button>
+
+  <div id="weather">
+    <p>Loading...</p>
+  </div>
+</div>
+
+<script>
+const apiKey = "4939475088f9b8b70f89bf4f3e400480";
+
+// 🌍 Auto location on load
+navigator.geolocation.getCurrentPosition(pos => {
+  const lat = pos.coords.latitude;
+  const lon = pos.coords.longitude;
+  fetchWeather(lat, lon);
+});
+
+// 🔍 Search by city
+function getWeatherByCity(){
+  const city = document.getElementById("cityInput").value;
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+  .then(res => res.json())
+  .then(data => showWeather(data));
+}
+
+// 🌐 Fetch using lat lon
+function fetchWeather(lat, lon){
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+  .then(res => res.json())
+  .then(data => showWeather(data));
+}
+
+// 🎨 Display UI
+function showWeather(data){
+  if(data.cod != 200){
+    document.getElementById("weather").innerHTML = "City not found";
+    return;
+  }
+
+  const icon = data.weather[0].icon;
+
+  document.getElementById("weather").innerHTML = `
+    <p class="city">${data.name}</p>
+    <img class="weather-icon" src="https://openweathermap.org/img/wn/${icon}@2x.png">
+    <p class="temp">${data.main.temp}°C</p>
+    <p>${data.weather[0].main}</p>
+  `;
+}
+</script>
+
+</body>
+</html>
